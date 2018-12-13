@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        Lab 12
+    </title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            // Hide all the divs upon document load
+            $("#div1,#div2,#div3").hide();
+
+            // create timer
+            var minutes = seconds = milliseconds = 0;
+            var prev_minutes = prev_seconds = prev_milliseconds = undefined;
+            var timeUpdate; //global variable
+            var counter = 3;
+
+            $("#start").click(function () {
+                updateTime(0, 0, 0);
+                var newq = makeNewPosition();
+                $("#div1").css({ left: newq[0], top: newq[1] })
+                $("#div1").fadeIn()
+
+                var newq = makeNewPosition();
+                $("#div2").css({ left: newq[0], top: newq[1] })
+                $("#div2").fadeIn()
+
+                var newq = makeNewPosition();
+                $("#div3").css({ left: newq[0], top: newq[1] })
+                $("#div3").fadeIn()
+
+                $("#div1").click(function () {
+                    $(this).fadeOut()
+                    counter--;
+                    if (counter == 0) {
+                        clearInterval(timeUpdate);
+                    }
+                });
+
+                $("#div2").click(function () {
+                    $(this).fadeOut()
+                    counter--;
+                    if (counter == 0) {
+                        clearInterval(timeUpdate);
+                    }
+                });
+
+                $("#div3").click(function () {
+                    $(this).fadeOut()
+                    counter--;
+                    if (counter == 0) {
+                        clearInterval(timeUpdate);
+                    }
+                });
+            });
+
+            function updateTime(prev_minutes, prev_seconds, prev_milliseconds) {
+                var startTime = new Date();    // fetch current time
+                timeUpdate = setInterval(function () {
+                    var timeElapsed = new Date().getTime() - startTime.getTime();    // calculate the time elapsed in milliseconds
+                    // calculate minutes
+                    minutes = parseInt(timeElapsed / 1000 / 60) + prev_minutes;
+                    if (minutes > 60) {
+                        minutes %= 60;
+                    }
+                    // calculate seconds
+                    seconds = parseInt(timeElapsed / 1000) + prev_seconds;
+                    if (seconds > 60) {
+                        seconds %= 60;
+                    }
+                    // calculate milliseconds 
+                    milliseconds = timeElapsed + prev_milliseconds;
+                    if (milliseconds > 1000) {
+                        milliseconds %= 1000;
+                    }
+                    // set the stopwatch
+                    setStopwatch(minutes, seconds, milliseconds);
+                }, 1); // update time in stopwatch after every 1ms
+
+            }
+            // Set the time in stopwatch
+            function setStopwatch(minutes, seconds, milliseconds) {
+                $("#minutes").html(prependZero(minutes, 2));
+                $("#seconds").html(prependZero(seconds, 2));
+                $("#milliseconds").html(prependZero(milliseconds, 3)); // ms is 3 digits
+            }
+
+            // Prepend zeros to the digits in stopwatch
+            function prependZero(time, length) {
+                time = new String(time);    // stringify time
+                return new Array(Math.max(length - time.length + 1, 0)).join("0") + time;
+            }
+
+
+
+            $("#stop").click(function () {
+                clearInterval(timeUpdate);
+            });
+        });
+
+
+        function makeNewPosition() {
+            var nh = 50 + Math.floor(Math.random() * 1000);
+            var nw = 50 + Math.floor(Math.random() * 500);
+            return [nh, nw];
+        }
+
+    </script>
+
+    <style>
+        #div1 {
+            width: 50px;
+            height: 50px;
+            background-color: hotpink;
+            position: absolute;
+            top: 100px;
+            left: 250px;
+        }
+
+        #div2 {
+            width: 50px;
+            height: 50px;
+            background-color: rgb(179, 217, 230);
+            position: absolute;
+            top: 100px;
+            left: 500px;
+        }
+
+        #div3 {
+            width: 50px;
+            height: 50px;
+            background-color: lime;
+            position: absolute;
+            top: 100px;
+            left: 750px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="div1"></div>
+    <div id="div2"></div>
+    <div id="div3"></div>
+    <div id="div">
+        <font size="4">
+            <div id="time">
+                <span id="minutes">00</span> :
+                <span id="seconds">00</span> :
+                <span id="milliseconds">000</span>
+            </div>
+        </font>
+        <div id="controls">
+            <button id="start">Start</button>
+        </div>
+    </div>
+
+</body>
+
+</html>
